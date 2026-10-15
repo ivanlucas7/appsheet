@@ -18,7 +18,7 @@ import { escapeHtml } from './markdown.js';
 
 const HISTORY_KEY = 'appsheet-envios';
 const MAX_HISTORY = 20;
-const PLACEHOLDER = 'SUA_PUBLIC_KEY_AQUI';
+const PLACEHOLDER = '992fcf498c96049b6971';
 
 const $ = (id) => document.getElementById(id);
 
@@ -141,6 +141,27 @@ function showConfirmation(entry) {
   renderHistory();
 }
 
+/**
+ * Resolve a public key do Uploadcare:
+ * 1) env da Vercel via GET /api/config (forma recomendada);
+ * 2) fallback: valor digitado em site/js/config.js.
+ */
+async function resolvePubkey() {
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) {
+      const data = await res.json();
+      const key = String(data?.uploadcarePubkey || '').trim();
+      if (key && key !== PLACEHOLDER) return key;
+    }
+  } catch {
+    // /api/config indisponível (ex.: abrindo index.html localmente):
+    // cai no fallback do config.js.
+  }
+  const fallback = String(UPLOADCARE.PUBKEY || '').trim();
+  return fallback && fallback !== PLACEHOLDER ? fallback : '';
+}
+
 export async function initUploader() {
   renderHistory();
 
@@ -152,14 +173,18 @@ export async function initUploader() {
   }
   validateForm();
 
+  // Public key vem (em ordem de prioridade) da env da Vercel
+  // (UPLOADCARE_PUBLIC_KEY → /api/config) ou, como fallback, do config.js.
+  const pubkey = await resolvePubkey();
+
   // Sem public key, o upload não funciona: avisa e não carrega o uploader.
-  if (!UPLOADCARE.PUBKEY || UPLOADCARE.PUBKEY === PLACEHOLDER) {
+  if (!pubkey || pubkey === PLACEHOLDER) {
     const aviso = $('uploadcare-aviso');
     if (aviso) {
       aviso.hidden = false;
       aviso.textContent =
         '⚠️ O envio de tarefas ainda não foi ativado: falta configurar a public key ' +
-        'do Uploadcare em site/js/config.js. Avise o professor.';
+        'do Uploadcare (env UPLOADCARE_PUBLIC_KEY na Vercel). Avise o professor.';
     }
     return;
   }
@@ -188,8 +213,8 @@ export async function initUploader() {
   const ctxEl = $('upload-ctx');
   if (!configEl || !ctxEl) return;
 
-  // Opções vindas do config.js (atributos + propriedade DOM).
-  configEl.setAttribute('pubkey', UPLOADCARE.PUBKEY);
+  // Opções vindas da env/config (atributos + propriedade DOM).
+  configEl.setAttribute('pubkey', pubkey);
   configEl.setAttribute('max-local-file-size-bytes', String(UPLOADCARE.MAX_FILE_SIZE_BYTES));
   configEl.setAttribute('accept', UPLOADCARE.ACCEPT);
   configEl.setAttribute('locale-name', 'pt');

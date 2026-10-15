@@ -39,10 +39,15 @@ pasta para o selo "Novo" contam).
 ### 3. Uploadcare — ativar o envio de tarefas
 
 1. Crie a conta/projeto em [uploadcare.com](https://uploadcare.com) e copie a
-   **Public Key** (dashboard → API keys). É pública — pode ir no código.
-2. Em `site/js/config.js`, troque `SUA_PUBLIC_KEY_AQUI` pela sua key:
-   `UPLOADCARE.PUBKEY = 'demopublickey'` (exemplo de formato).
-3. Commit + push. Sem a key, o site mostra aviso e o uploader nem carrega.
+   **Public Key** (dashboard → API keys).
+2. Vercel → Project → **Settings → Environment Variables** → adicione
+   `UPLOADCARE_PUBLIC_KEY` = a public key (Production + Preview) e faça
+   **Redeploy**. O front busca a key via `GET /api/config` — nada é
+   escrito no repositório.
+   - Fallback local: em `site/js/config.js`, `UPLOADCARE.PUBKEY`
+     (`'SUA_PUBLIC_KEY_AQUI'` hoje). Usado só se a env não existir.
+3. Sem key em nenhum dos dois lugares, o site mostra aviso e o uploader
+   nem carrega.
 4. No dashboard do Uploadcare, filtre os envios por **Metadata**:
    `aluno`, `turma_email`, `semana_atividade`, `observacao`, `enviado_em`.
 5. (Opcional) No projeto Uploadcare, restrinja também por extensão/tamanho
@@ -59,8 +64,9 @@ pasta para o selo "Novo" contam).
 #    crie site/.env.local com GITHUB_TOKEN=seu_token (ignorado pelo git)
 ```
 
-> ⚠️ Nunca commite tokens. Só a **public key** do Uploadcare vai para o
-> repositório. Segredos ficam nas Environment Variables da Vercel.
+> ⚠️ Nunca commite tokens. Segredos ficam nas Environment Variables da
+> Vercel (`GITHUB_TOKEN`, `UPLOADCARE_PUBLIC_KEY`) — o que sai de
+> `/api/config` é só a **public key**, que é pública por natureza.
 
 ## Estrutura
 
@@ -78,6 +84,7 @@ site/
 │   ├── uploader.js   # Uploadcare v1 (tags uc-*, locale pt, metadados)
 │   └── main.js       # orquestração
 ├── api/tree.js       # função serverless (proxy + cache + selo "Novo")
+├── api/config.js     # devolve a env UPLOADCARE_PUBLIC_KEY ao front
 ├── package.json      # só metadados (sem dependências, sem build)
 └── .gitignore        # ignora .env.local
 ```
