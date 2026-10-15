@@ -1,0 +1,7 @@
+{
+  "name": "appsheet-portal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Portal de materiais do curso de AppSheet (estático + função serverless /api/tree)"
+}

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Portal de materiais do curso de AppSheet: apostilas, apresentações e atividades por semana, para baixar no celular ou no computador. Envie sua tarefa pela mesma página." />
+  <meta name="theme-color" content="#0e7490" />
+  <title>Materiais do Curso de AppSheet</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <h1>📱 Materiais do Curso de AppSheet</h1>
+      <p class="tagline">Todo o conteúdo do curso em um só lugar: baixe as apostilas e envie suas tarefas.</p>
+      <nav class="site-nav" aria-label="Navegação principal">
+        <ul>
+          <li><a href="#materiais">📚 Materiais</a></li>
+          <li><a href="#enviar">📤 Enviar tarefa</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo" class="wrap">
+    <div id="status-global" class="status-global" role="status" aria-live="polite"></div>
+
+    <section id="materiais" class="bloco" aria-labelledby="h-materiais">
+      <h2 id="h-materiais">Materiais do curso</h2>
+
+      <div id="resumo-bar" class="resumo-bar" role="status" aria-label="Resumo dos materiais">
+        <div class="stat"><span class="stat__num">…</span><span class="stat__lbl">carregando</span></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="busca-wrap">
+          <label for="busca">Buscar arquivo ou pasta</label>
+          <input
+            type="search"
+            id="busca"
+            name="busca"
+            placeholder="Ex.: apostila, questionário, semana 3…"
+            autocomplete="off"
+          />
+          <span id="busca-count" class="busca-count" aria-live="polite"></span>
+        </div>
+        <div id="filtros-tipo" class="chips" role="group" aria-label="Filtrar por tipo de arquivo"></div>
+      </div>
+
+      <div id="erro-carregamento" hidden></div>
+
+      <div id="bloco-carregando" class="carregando" role="status" aria-label="Carregando materiais">
+        <p>Carregando materiais…</p>
+      </div>
+
+      <section id="resultados-sec" aria-labelledby="h-resultados" hidden>
+        <h3 id="h-resultados">Resultados <span id="resultados-count"></span></h3>
+        <div id="resultados-lista"></div>
+      </section>
+
+      <section id="semanas-sec" aria-labelledby="h-semanas" hidden>
+        <h3 id="h-semanas">Semanas</h3>
+        <div id="semanas-lista"></div>
+      </section>
+
+      <section id="extras-sec" aria-labelledby="h-extras" hidden>
+        <h3 id="h-extras">Materiais complementares</h3>
+        <div id="extras-lista"></div>
+      </section>
+    </section>
+
+    <section id="enviar" class="bloco" aria-labelledby="h-enviar">
+      <h2 id="h-enviar">Enviar tarefa</h2>
+      <p>Preencha seus dados, escolha a semana e envie o arquivo (<strong>PDF ou ZIP, até 10 MB</strong>).</p>
+      <p class="aviso aviso--alerta">⚠️ Não envie dados sensíveis (senhas, CPF, documentos pessoais). Só o necessário para identificar sua tarefa.</p>
+
+      <div class="envio-card">
+        <form id="form-envio" novalidate>
+          <label class="campo" for="env-nome">
+            <span>Nome completo <span class="obrig" aria-hidden="true">*</span></span>
+            <input type="text" id="env-nome" name="nome" autocomplete="name" required minlength="2" placeholder="Ex.: Maria Silva" />
+          </label>
+          <label class="campo" for="env-turma">
+            <span>Turma ou e-mail <span class="obrig" aria-hidden="true">*</span></span>
+            <input type="text" id="env-turma" name="turma" autocomplete="email" required minlength="2" placeholder="Ex.: Turma A · noite — ou seu e-mail" />
+          </label>
+          <label class="campo" for="env-semana">
+            <span>Semana / atividade <span class="obrig" aria-hidden="true">*</span></span>
+            <select id="env-semana" name="semana" required>
+              <option value="">— Carregando semanas… —</option>
+            </select>
+          </label>
+          <label class="campo" for="env-obs">
+            <span>Observação <small>(opcional)</small></span>
+            <textarea id="env-obs" name="observacao" rows="2" maxlength="500" placeholder="Algum recado para o professor? (opcional)"></textarea>
+          </label>
+        </form>
+
+        <p id="dica-liberacao" class="dica-liberacao" role="status">Preencha os campos obrigatórios para liberar o envio.</p>
+
+        <div id="uploader-lock" class="uploader-lock" aria-hidden="true">🔒 O envio será liberado após preencher os campos acima.</div>
+
+        <div id="uploader-wrap" hidden>
+          <uc-upload-ctx-provider id="upload-ctx" ctx-name="envio-alunos"></uc-upload-ctx-provider>
+          <uc-config id="uc-config" ctx-name="envio-alunos"></uc-config>
+          <uc-file-uploader-regular id="uc-uploader" ctx-name="envio-alunos"></uc-file-uploader-regular>
+        </div>
+
+        <p id="uploadcare-aviso" class="aviso aviso--alerta" hidden></p>
+        <p id="env-status" role="status" aria-live="polite"></p>
+        <div id="env-confirmacao" class="confirmacao" hidden></div>
+
+        <div class="historico">
+          <h3>Seus envios neste navegador</h3>
+          <p id="env-historico-vazio" class="empty">Nenhum envio registrado neste navegador ainda.</p>
+          <ul id="env-historico-lista"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Portal de materiais do curso de AppSheet · <span id="ano-atual"></span></p>
+      <p>Os arquivos são carregados diretamente do repositório do curso no GitHub.
+        <a data-repo-link href="#" target="_blank" rel="noopener noreferrer">Abrir repositório ↗</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
