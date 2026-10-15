@@ -18,7 +18,8 @@ import { escapeHtml } from './markdown.js';
 
 const HISTORY_KEY = 'appsheet-envios';
 const MAX_HISTORY = 20;
-const PLACEHOLDER = '992fcf498c96049b6971';
+const PLACEHOLDER = 'SUA_PUBLIC_KEY_AQUI';
+
 
 const $ = (id) => document.getElementById(id);
 

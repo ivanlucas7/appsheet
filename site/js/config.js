@@ -27,11 +27,10 @@ export const IGNORE_PATHS = [
 
 export const UPLOADCARE = {
   CTX_NAME: 'envio-alunos',
-  // 👉 Forma RECOMENDADA: defina a env UPLOADCARE_PUBLIC_KEY na Vercel
-  //    (o front busca via GET /api/config). Este campo é apenas fallback
-  //    para uso local sem serverless. Sem key em nenhum dos dois lugares,
-  //    o envio de tarefas não funciona.
-  PUBKEY: 'SUA_PUBLIC_KEY_AQUI',
+  // 👉 Sua public key do Uploadcare (dashboard → API keys). É pública por
+  //    natureza e pode ficar aqui. Prioridade: env UPLOADCARE_PUBLIC_KEY
+  //    na Vercel (via /api/config) > este campo > sem key (uploader parado).
+  PUBKEY: '992fcf498c96049b6971',
   // Tamanho máximo por arquivo: 10 MB.
   MAX_FILE_SIZE_BYTES: 10 * 1024 * 1024,
   // Extensões aceitas no envio.
